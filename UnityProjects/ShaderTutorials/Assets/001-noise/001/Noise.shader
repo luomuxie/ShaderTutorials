@@ -1,4 +1,4 @@
-Shader "Custom/ShaderName" {
+Shader "Custom/Noise" {
     Properties {
         _LineColor ("Line Color", Color) = (1,1,1,1)  // White
         _BackgroundColor ("Background Color", Color) = (0,0,0,1)  // Black
@@ -61,13 +61,13 @@ Shader "Custom/ShaderName" {
                 float mask = 0.0;
                 for (int i = 0; i < _LineCount; i++) {
                     // Calculate noise for the angle of the line
-                    float angle = noise(gridCenter*( _Time.y) + i*0.1) * 2.0 * 3.14159;  // Convert noise value to angle
-                    float length = lerp(0.1, 1.0, noise(gridCenter*(1))); 
+                    float angle = noise(gridCenter + i*0.1) * 2.0 * 3.14159;  // Convert noise value to angle
+                    float length = lerp(0.1, 0.9, noise(gridCenter*(i+40+_Time.y))); 
                     float2 dir = float2(cos(angle), sin(angle));
 
                     
                     // Calculate the distance to the line segment starting from grid center
-                    float d = sdSegment(st, gridCenter, gridCenter + dir * gridSize * length);
+                    float d = sdSegment(st, dir, gridCenter + dir * gridSize * length);
 
                     // Create a mask based on the distance
                     mask += 1.0 - step(_LineWidth, d);

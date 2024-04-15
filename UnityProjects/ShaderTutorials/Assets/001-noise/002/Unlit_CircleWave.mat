@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_ShaderName
-  m_Shader: {fileID: 4800000, guid: c6e573f9cb6a5cf4caddee4f186c4919, type: 3}
+  m_Name: Unlit_CircleWave
+  m_Shader: {fileID: 4800000, guid: 058a4e0d9ff8c034b8e5788560eef75f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,12 +29,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _GridCount: 1
-    - _LineCount: 100
-    - _LineWidth: 0.001
-    - _Radius: 0.635
-    - _Width: 0.0256
-    m_Colors:
-    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Radius: 0.5
+    - _Width: 0.01
+    m_Colors: []
   m_BuildTextureStacks: []
