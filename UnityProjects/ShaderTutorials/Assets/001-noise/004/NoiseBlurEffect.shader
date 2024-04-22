@@ -6,7 +6,7 @@ Shader "Custom/NoiseBlurEffect"
         //create a slider to control the division of the texture
         _Division("Division", Range(1, 10)) = 1
         //create a slider to control the blur cnt
-        _BlurCnt("BlurCnt", Range(2, 100)) = 32
+        _BlurCnt("BlurCnt", Range(2, 200)) = 32
         // create a lightDic with v2
         _Light("Light", Vector) = (0.707, 0.707, 0, 0)
     }
@@ -59,20 +59,14 @@ Shader "Custom/NoiseBlurEffect"
                 return lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
                             lerp(hash(n + 57.0), hash(n + 58.0), f.x), f.y);
             }
-
-            //它接收两个参数：一个是UV坐标，另一个是时间偏移量。
-            //首先，它使用噪声函数和时间偏移量对UV坐标进行扭曲。
-            //然后，它计算出一个基于噪声的角度值。
-            //最后，它返回一个由cos和sin函数生成的向量，这个向量的方向由上一步的角度值决定。
-            //这个向量后续被用来扭曲UV坐标，从而实现模糊效果。
-            float2 map(float2 uv, float offset)
+            
+            float2 map(float2 uv, float time)
             {
-                float time = _Time.y;
                 uv.x += 0.1 * sin(time + 2.0 * uv.y);
                 uv.y += 0.1 * sin(time + 2.0 * uv.x);
 
                 float angel = noise(uv * 1.5 + sin(0.01 * time)) * 6.2831;
-                angel -= offset;
+                angel -= time;
                 return float2(cos(angel), sin(angel));
             }
 
@@ -83,19 +77,21 @@ Shader "Custom/NoiseBlurEffect"
                 float3 col = float3(0,0, 0);
                 for (int j = 0; j < _BlurCnt; j++)
                 {
-                    float2 dir = map(uv, _Time.y);
-                    float hight = float(j) / _BlurCnt;//实际上在模糊之后提取了一种高度场
+                    
+                    float hight = float(j) / _BlurCnt;
                     float wight = 4.0 * hight * (1.0 - hight);
                     float3 colorTexture = wight * tex2D(_MainTex, uv).xyz;
                     //colorTexture *= lerp(float3(0.6, 0.7, 0.7), float3(1.0, 0.95, 0.9), 0.5 - 0.5 * dot(reflect(float3(dir, 0.0), float3(1.0, 0.0, 0.0)).xy, float2(0.707, 0.707)));
                     col += wight * colorTexture;
                     acc += wight;
+                    
+                    float2 dir = map(uv, _Time.y);
                     uv += 0.008 * dir;
                 }
                 
                 col /= acc;
-                float2 di = map(uv, _Time.y);
-                col *= 0.65 + 0.35 * dot(di, float2(_Light.x, _Light.y));
+                float2 normal = map(uv, _Time.y);
+                col *= 0.65 + 0.35 * dot(normal, float2(_Light.x, _Light.y));
                 //col *= 0.20 + 0.80 * pow(4.0 * p.x * (1.0 - p.x), 0.1);
                 col *= 1.7;
                 return float4(col, 1.0);
