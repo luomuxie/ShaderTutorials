@@ -368,7 +368,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cadcdb84c253b8d40a01adaa4d531849, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9baa3c38349aaa842816c6da24ba7983, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -387,8 +387,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2131980497}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0983448, y: 0.072721235, z: -1.5138265}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.0426, y: 0.072721235, z: -1.5138265}
+  m_LocalScale: {x: 0.9903, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -407,6 +407,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkerMaterial: {fileID: 2100000, guid: 5e9f2728555d2cc43b9e1826fea59815, type: 2}
-  walkerTextureA: {fileID: 8400000, guid: bbffabaac06475b4784b21df22d6f794, type: 2}
-  walkerTextureB: {fileID: 8400000, guid: df0fff030196b2541b86a23584a6c98a, type: 2}
-  speed: 0.5
+  currentSource: {fileID: 8400000, guid: bbffabaac06475b4784b21df22d6f794, type: 2}
+  currentDest: {fileID: 8400000, guid: df0fff030196b2541b86a23584a6c98a, type: 2}
+  spriteTexture: {fileID: 2800000, guid: 2aee38b4fc03f644d83380878ca7834f, type: 3}
+  spriteTextureBg: {fileID: 2800000, guid: 9baa3c38349aaa842816c6da24ba7983, type: 3}
+  speed: 0.001

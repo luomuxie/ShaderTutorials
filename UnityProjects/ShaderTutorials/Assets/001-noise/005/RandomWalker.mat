@@ -28,11 +28,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: cadcdb84c253b8d40a01adaa4d531849, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2aee38b4fc03f644d83380878ca7834f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Length: 0.5
     - _Speed: 0.1
     m_Colors: []
   m_BuildTextureStacks: []

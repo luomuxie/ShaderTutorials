@@ -4,8 +4,7 @@ Shader "Custom/RandomWalker"
     {
         _MainTex ("Texture", 2D) = "white" {} // 初始纹理
         _InputTex ("Input Texture", 2D) = "white" {} // 处理输入纹理
-        //create a speed property
-        _Speed ("Speed", Range(0, 0.1)) = 0.001
+        
     }
     SubShader
     {
@@ -34,6 +33,10 @@ Shader "Custom/RandomWalker"
 
             sampler2D _MainTex;
             sampler2D _InputTex;
+            
+            float2 _RandInput;
+
+            
             float4 _MainTex_ST;
 
             v2f vert (appdata v)
@@ -50,16 +53,18 @@ Shader "Custom/RandomWalker"
                 return length(pa - ba * h);
             }
             
-            /*
-            float noise(float2 st) {
+            
+            float noise2(float2 st) {
                 return frac(sin(dot(st, float2(12.9898,78.233))) * 43758.5453123);
             }
-            */
+            
 
             float hash(float n)
             {
                 return frac(sin(n) * 43758.5453);
             }
+
+            
 
             float noise(float2 x)
             {
@@ -84,23 +89,25 @@ Shader "Custom/RandomWalker"
             
             fixed4 frag (v2f i) : SV_Target
             {
+                // Draw a line segment using noise
+                float2 a = _RandInput;
                 // Sample the appropriate texture
                 fixed4 col = tex2D(_InputTex, i.uv);
-
-                // Draw a line segment using noise
-                float2 a = float2(noise(_Time.y), noise(_Time.x));
-                //get the direction of the random walker
-                //float2 dir = getDirection(_Time.xy +45 );
-                //move the point a to the direction
-                //a += dir * 0.01;
-                float2 b = float2(noise(_Time.x), noise(_Time.y));
-                //b += getDirection(_Time.yx*0.01*sin(_Time.x)+50 ) ;
-                float d = sdSegment(i.uv, a, b);
                 
-                 fixed4 colCur = tex2D(_MainTex, a);
+                //get the dir by map
+                float2 dir = noise2(a)*0.01;
+                float2 b = a + dir;
+                
+                float d = sdSegment(i.uv, a, b);
+                //get the middle by a and b
+                float2 middle = (a + b) / 2;
+                
+                 fixed4 colCur = tex2D(_MainTex, middle);
                 // Add a time-dependent color effect
                 fixed4 timeColor = fixed4(sin(_Time.y), cos(_Time.y), sin(_Time.y) * cos(_Time.y), 1);
-                col = lerp(colCur, col, smoothstep(0.01, 0.02, d));
+                
+                col = lerp(colCur, col, smoothstep(-0.01, 0.01, d));
+
 
                 return col;
             }

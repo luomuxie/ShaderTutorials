@@ -3,13 +3,13 @@ using UnityEngine;
 public class WalkerRenderer : MonoBehaviour
 {
     public Material walkerMaterial;
-    public RenderTexture walkerTextureA;
-    public RenderTexture walkerTextureB;
 
-    private RenderTexture currentSource;
-    private RenderTexture currentDest;
+    public RenderTexture currentSource;
+    public RenderTexture currentDest;
     
-    public SpriteRenderer sprite2dRenderer;
+    
+    public Texture spriteTexture;
+    public Texture spriteTextureBg;
     private float timer = 0.0f;
     public float speed = 0.5f;
 
@@ -17,18 +17,13 @@ public class WalkerRenderer : MonoBehaviour
     {
         // Initialize the textures
         
-        sprite2dRenderer = GetComponent<SpriteRenderer>();
-        var spriteTexture = sprite2dRenderer.sprite.texture;
-        walkerTextureA = new RenderTexture(spriteTexture.width, spriteTexture.height, 0);
-        walkerTextureB = new RenderTexture(spriteTexture.width, spriteTexture.height, 0);
         
-
-
-        currentSource = walkerTextureA;
-        currentDest = walkerTextureB;
         // Initialize with the sprite texture
+        // Graphics.Blit(spriteTexture, currentSource);
+        // Graphics.Blit(spriteTextureBg, currentDest);
+        
+        Graphics.Blit(spriteTexture,  currentDest);
         Graphics.Blit(spriteTexture, currentSource);
-        Graphics.Blit(spriteTexture, currentDest);
         
         // Initialize with any specific content if necessary
         Graphics.Blit(null, currentSource);
@@ -38,11 +33,15 @@ public class WalkerRenderer : MonoBehaviour
     {
         // Set the speed of the walker
         timer+= Time.deltaTime;
-        if(timer > speed)
+        if(timer > speed||true)
         {
             timer = 0.0f;
             // Set the input texture for the material
             walkerMaterial.SetTexture("_InputTex", currentSource);
+            //set the input random val for v2
+            Vector2 randInput = new Vector2(Random.value, Random.value);
+            walkerMaterial.SetVector("_RandInput", randInput);
+            
 
             // Perform the effect
             Graphics.Blit(currentSource, currentDest, walkerMaterial);
@@ -62,7 +61,7 @@ public class WalkerRenderer : MonoBehaviour
     void OnDestroy()
     {
         // Release the resources
-        walkerTextureA.Release();
-        walkerTextureB.Release();
+        //walkerTextureA.Release();
+        //walkerTextureB.Release();
     }
 }
