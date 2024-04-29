@@ -86,28 +86,30 @@ Shader "Custom/RandomWalker"
                 angel -= time;
                 return float2(cos(angel), sin(angel));
             }
+
+            float sdCircle(float2 p, float2 center, float radius) {
+                return length(p - center) - radius;
+            }
             
             fixed4 frag (v2f i) : SV_Target
             {
-                // Draw a line segment using noise
-                float2 a = _RandInput;
+                // 定义圆的中心和半径
+                float2 center = _RandInput;
+                float radius = 0.01;  // 可以调整圆的大小
+
+                // 使用圆的sd函数代替线段的sd函数
+                float d = sdCircle(i.uv, center, radius);
+                
                 // Sample the appropriate texture
                 fixed4 col = tex2D(_InputTex, i.uv);
                 
-                //get the dir by map
-                float2 dir = noise2(a)*0.01;
-                float2 b = a + dir;
-                
-                float d = sdSegment(i.uv, a, b);
-                //get the middle by a and b
-                float2 middle = (a + b) / 2;
-                
-                 fixed4 colCur = tex2D(_MainTex, middle);
-                // Add a time-dependent color effect
+                // 计算颜色，使用一个圆周范围来创建软边缘
+                fixed4 colCur = tex2D(_MainTex, center);
+                // 添加时间依赖的颜色效果
                 fixed4 timeColor = fixed4(sin(_Time.y), cos(_Time.y), sin(_Time.y) * cos(_Time.y), 1);
                 
+                // col = lerp(timeColor, col, smoothstep(-0.01, 0.01, d));
                 col = lerp(colCur, col, smoothstep(-0.01, 0.01, d));
-
 
                 return col;
             }
