@@ -4,7 +4,7 @@ Shader "Custom/RandomWalker"
     {
         _MainTex ("Texture", 2D) = "white" {} // 初始纹理
         _InputTex ("Input Texture", 2D) = "white" {} // 处理输入纹理
-        
+        _MainTex2 ("Texture2", 2D) = "white" {} // 初始纹理
     }
     SubShader
     {
@@ -33,6 +33,7 @@ Shader "Custom/RandomWalker"
 
             sampler2D _MainTex;
             sampler2D _InputTex;
+            sampler2D _MainTex2;
             
             float2 _RandInput;
 
@@ -53,7 +54,6 @@ Shader "Custom/RandomWalker"
                 return length(pa - ba * h);
             }
             
-            
             float noise2(float2 st) {
                 return frac(sin(dot(st, float2(12.9898,78.233))) * 43758.5453123);
             }
@@ -65,7 +65,6 @@ Shader "Custom/RandomWalker"
             }
 
             
-
             float noise(float2 x)
             {
                 float2 p = floor(x);
@@ -91,26 +90,33 @@ Shader "Custom/RandomWalker"
                 return length(p - center) - radius;
             }
             
+            // 添加一个控制颜色插值强度的参数
+            uniform float _InterpolationStrength;
+
             fixed4 frag (v2f i) : SV_Target
             {
-                // 定义圆的中心和半径
-                float2 center = _RandInput;
-                float radius = 0.01;  // 可以调整圆的大小
-
-                // 使用圆的sd函数代替线段的sd函数
-                float d = sdCircle(i.uv, center, radius);
+                 float2 center = _RandInput;
+                //float2 center = float2(0.5, 0.5); // 圆心
                 
-                // Sample the appropriate texture
+                // float radius = 0.015; // 圆的半径
+                // float d = sdCircle(i.uv, center, radius);
+
+                //get the dir by map------------------------------------
+                float angle = noise(center) * 2.0 * 3.14159;
+                float2 dir = float2(cos(angle), sin(angle));
+                float2 b = center + dir* 0.025;
+                
+                float d = sdSegment(i.uv, center, b);
+                //get the middle by a and b
+                float2 middle = (center + b) / 2;
+                //------------------------------------------------------
+                
                 fixed4 col = tex2D(_InputTex, i.uv);
+                fixed4 colCur = tex2D(_MainTex2, middle);
                 
-                // 计算颜色，使用一个圆周范围来创建软边缘
-                fixed4 colCur = tex2D(_MainTex, center);
-                // 添加时间依赖的颜色效果
-                fixed4 timeColor = fixed4(sin(_Time.y), cos(_Time.y), sin(_Time.y) * cos(_Time.y), 1);
-                
-                // col = lerp(timeColor, col, smoothstep(-0.01, 0.01, d));
-                col = lerp(colCur, col, smoothstep(-0.01, 0.01, d));
-
+                 //fixed4 timeColor = fixed4(sin(_Time.y), cos(_Time.y), sin(_Time.y) * cos(_Time.y), 1);
+                // 使用一个新参数来调节插值强度
+                col = lerp(colCur, col, smoothstep(-0.00, 0.015, d));
                 return col;
             }
             ENDCG
