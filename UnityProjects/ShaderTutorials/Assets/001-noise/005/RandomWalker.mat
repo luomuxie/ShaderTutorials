@@ -40,5 +40,5 @@ Material:
     - _Length: 0.5
     - _Speed: 0.1
     m_Colors:
-    - _RandInput: {r: 0.50956994, g: 0.42250448, b: 0, a: 0}
+    - _RandInput: {r: 0.9559388, g: 0.49673337, b: 0, a: 0}
   m_BuildTextureStacks: []
